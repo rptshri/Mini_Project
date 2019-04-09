@@ -1,17 +1,17 @@
-#define debug
+//#define debug
 //#define debug1
-#define WANT
+//#define WANT
 //#define pwm_high 210
 //#define pwm_low 170
 //#define pwm_least 140
 #define pwm_high 150
 #define pwm_low 110
 #define pwm_least 70
-const int mod1 = 8;
-const int mod2 = 9;
-const int mod3 = 10;
-const int mod4 = 11;
-const int mod5 = 12;
+//const int mod1 = 8;
+//const int mod2 = 9;
+//const int mod3 = 10;
+//const int mod4 = 11;
+//const int mod5 = 12;
 const int pwm_1 = 5;
 const int pwm_2 = 6;
 const int dir1PinA = 2;
@@ -22,7 +22,7 @@ const int dir2PinB = 7;
 
 void serialprint()
 {
-  Serial.println(PINB, BIN);
+  //  Serial.println(PINC, BIN);
   Serial.println("_______________________");
   //delay (400);
 }
@@ -62,8 +62,6 @@ void rightBack()
 
 ////////////////////////////////////////////
 
-/////////////////////////////////////////////
-
 unsigned long int val = 0b00000000;
 
 void setup() {
@@ -78,18 +76,17 @@ void setup() {
   pinMode(dir2PinB, OUTPUT);
   DDRB = 0x00;
 
-  delay(3000);
+  delay(500);
 }
 
 void loop() {
+
+  uint8_t val = PINC;
+  val = (PINC | 0b00100000);
+
 #ifdef debug
+  Serial.println(val, BIN);
   serialprint();
-#endif
-
-  uint8_t val = PINB;
-
-#ifdef debug1
-  Serial.println(ch);
 #endif
 
   switch (val)
@@ -105,7 +102,7 @@ void loop() {
 #endif
 
       break;
-    //////////////////////////
+    ////////////////////////
     case 0b00111001 :  {                   //soft right
         analogWrite(pwm_1, pwm_low);
         analogWrite(pwm_2, pwm_high);
@@ -117,11 +114,33 @@ void loop() {
       break;
 
     ///////////////////////////
-    case 0b00111000  : {                //right_hard
-        analogWrite(pwm_1, pwm_high);
-        analogWrite(pwm_2, pwm_high);
-        rightBack();
-      };
+    case 0b00111000  :
+      while (val != 0b00111111 )
+      {
+        val = (PINC | 0b00100000);
+        analogWrite(pwm_1, pwm_low);
+        analogWrite(pwm_2, pwm_low);
+        forward();
+        Serial.println("inside till all white");
+      }
+      while (val != 0b00111001 )
+      { val = (PINC | 0b00100000);
+        {
+          analogWrite(pwm_1, pwm_high);
+          analogWrite(pwm_2, pwm_high);
+          rightBack();
+          Serial.println("inside till all centre1");
+        }
+      }
+      while (val != 0b00110001 )
+      { val = (PINC | 0b00100000);
+        {
+          analogWrite(pwm_1, pwm_high);
+          analogWrite(pwm_2, pwm_high);
+          rightBack();
+          Serial.println("inside till all centre2");
+        }
+      }
 #ifdef WANT
       Serial.println("hright");
 #endif
@@ -153,21 +172,21 @@ void loop() {
         forward();
       };
 #ifdef WANT
-      Serial.println("hardright");
+      Serial.println("hright");
 #endif
       break;
-    /////////////////////////////////
+    ///////////////////////////////
     case 0b00110000 :
       while (val != 0b00111111 )
       {
-        val = PINB;
+        val = (PINC | 0b00100000);
         analogWrite(pwm_1, pwm_low);
         analogWrite(pwm_2, pwm_low);
         forward();
         Serial.println("inside till all white");
       }
       while (val != 0b00111001 )
-      { val = PINB;
+      { val = (PINC | 0b00100000);
         {
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
@@ -176,7 +195,7 @@ void loop() {
         }
       }
       while (val != 0b00110001 )
-      { val = PINB;
+      { val = (PINC | 0b00100000);
         {
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
@@ -197,13 +216,14 @@ void loop() {
         forward();
       };
 #ifdef WANT
-      Serial.println("hleft");
+      Serial.println("sleft");
 #endif
       break;
     //////////////////////////////////
-    case 0b00100011  : while (val != 0b00110011)
+    case 0b00100011  :
+      while (val != 0b00110011)
       {
-        val = PINB;
+        val = (PINC | 0b00100000);
         //        if (val == 0b00100000)
         //          break;
         {
@@ -251,7 +271,7 @@ void loop() {
 
     case 0b00100001 : while (val != 0b00110001 || val != 0b00111001)
       {
-        val = PINB;
+        val = (PINC | 0b00100000);
         {
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);

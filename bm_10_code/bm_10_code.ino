@@ -60,7 +60,7 @@ void loop()
 
 //    else 
 //    {
-      if ((c >= 14 && c <= 64)||(c >=67 && c <= 96)||(c>=104))
+      if ((c >= 14 && c <= 64)||(c >=73 && c <= 96)||(c>=104))
       {
         Serial.println("Invalid Input!");
         mySerial.println("Invalid Input!");

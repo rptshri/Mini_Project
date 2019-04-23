@@ -105,7 +105,7 @@ void loop() {
     ////////////////////////
     case 0b00111001 :  {                   //soft right
         analogWrite(pwm_1, pwm_low);
-        analogWrite(pwm_2, pwm_high);
+        analogWrite(pwm_2, (pwm_high + 10));
         forward();
       };
 #ifdef WANT
@@ -114,7 +114,7 @@ void loop() {
       break;
 
     ///////////////////////////
-    case 0b00111000  :
+    case 0b00111000  :                              //right turn
       while (val != 0b00111111 )
       {
         val = (PINC | 0b00100000);
@@ -146,7 +146,7 @@ void loop() {
 #endif
       break;
     /////////////////////////////
-    case 0b00111100  : {
+    case 0b00111100  : {                                  //rightback
         analogWrite(pwm_1, pwm_high);
         analogWrite(pwm_2, pwm_high);
         rightBack();
@@ -156,7 +156,7 @@ void loop() {
 #endif
       break;
     ////////////////////////////////
-    case 0b00111110 : {
+    case 0b00111110 : {                               //rightback
         analogWrite(pwm_1, pwm_high);
         analogWrite(pwm_2, pwm_high);
         rightBack();
@@ -166,17 +166,17 @@ void loop() {
 #endif
       break;
     ////////////////////////////////
-    case 0b00111101 : {
-        analogWrite(pwm_1, pwm_least);
+    case 0b00111101 : {                               //rightback
+        analogWrite(pwm_1, pwm_high);
         analogWrite(pwm_2, pwm_high);
-        forward();
+        rightBack();
       };
 #ifdef WANT
       Serial.println("hright");
 #endif
       break;
     ///////////////////////////////
-    case 0b00110000 :
+    case 0b00110000 :                                 //right turn
       while (val != 0b00111111 )
       {
         val = (PINC | 0b00100000);
@@ -210,7 +210,7 @@ void loop() {
       break;
     ////////////////////////////////////        //left codes
 
-    case 0b00110011 : {
+    case 0b00110011 : {                       //soft left
         analogWrite(pwm_1, pwm_high);
         analogWrite(pwm_2, pwm_low);
         forward();
@@ -220,16 +220,31 @@ void loop() {
 #endif
       break;
     //////////////////////////////////
-    case 0b00100011  :
-      while (val != 0b00110011)
+    case 0b00100011  :                         //left turn
+      while (val != 0b00111111 )
       {
         val = (PINC | 0b00100000);
-        //        if (val == 0b00100000)
-        //          break;
+        analogWrite(pwm_1, pwm_low);
+        analogWrite(pwm_2, pwm_low);
+        forward();
+        Serial.println("inside till all white");
+      }
+      while (val != 0b00110011 )
+      { val = (PINC | 0b00100000);
         {
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
           leftBack();
+          Serial.println("inside till all centre1");
+        }
+      }
+      while (val != 0b00110001 )
+      { val = (PINC | 0b00100000);
+        {
+          analogWrite(pwm_1, pwm_high);
+          analogWrite(pwm_2, pwm_high);
+          leftBack();
+          Serial.println("inside till all centre2");
         }
       }
 #ifdef WANT
@@ -238,7 +253,7 @@ void loop() {
       break;
 
     //////////////////////////////////
-    case 0b00100111 : {
+    case 0b00100111 : {                       //leftback
         analogWrite(pwm_2, pwm_low);
         analogWrite(pwm_1, pwm_high);
         leftBack();
@@ -248,20 +263,20 @@ void loop() {
 #endif
       break;
     //////////////////////////////////
-    case 0b00101111 : {
+    case 0b00101111 : {                       //leftback
         analogWrite(pwm_1, pwm_high);
-        analogWrite(pwm_2, pwm_least);
-        forward();
+        analogWrite(pwm_2, pwm_low);
+        leftBack();
       };
 #ifdef WANT
       Serial.println("sleft");
 #endif
       break;
     //////////////////////////////////
-    case 0b00110111 : {
+    case 0b00110111 : {                     //leftback
         analogWrite(pwm_1, pwm_high);
-        analogWrite(pwm_2, pwm_least);
-        forward();
+        analogWrite(pwm_2, pwm_low);
+        leftBack();
       };
 #ifdef WANT
       Serial.println("sleft");
@@ -269,14 +284,31 @@ void loop() {
       break;
     //////////////////////////////////
 
-    case 0b00100001 : while (val != 0b00110001 || val != 0b00111001)
+    case 0b00100001 :                       //left turn
+      while (val != 0b00111111 )
       {
         val = (PINC | 0b00100000);
+        analogWrite(pwm_1, pwm_low);
+        analogWrite(pwm_2, pwm_low);
+        forward();
+        Serial.println("inside till all white");
+      }
+      while (val != 0b00110011 )
+      { val = (PINC | 0b00100000);
         {
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
-
           leftBack();
+          Serial.println("inside till all centre1");
+        }
+      }
+      while (val != 0b00110001 )
+      { val = (PINC | 0b00100000);
+        {
+          analogWrite(pwm_1, pwm_high);
+          analogWrite(pwm_2, pwm_high);
+          leftBack();
+          Serial.println("inside till all centre2");
         }
       }
 #ifdef WANT

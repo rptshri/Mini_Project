@@ -1,6 +1,6 @@
 #define debug
 //#define debug1
-//#define WANT
+#define WANT
 //#define pwm_high 210
 //#define pwm_low 170
 //#define pwm_least 140
@@ -18,7 +18,10 @@ const int dir1PinA = 2;
 const int dir1PinB = 3;
 const int dir2PinA = 4;
 const int dir2PinB = 7;
-
+boolean flag = 0;
+boolean blackflag = 0;
+int jnCount = 0;
+int count = 0;
 
 void serialprint()
 {
@@ -91,6 +94,27 @@ void loop() {
   serialprint();
 #endif
 
+  if (flag == 1)
+  {
+    Serial.println("inside count");
+    count = 0;
+    jnCount = jnCount + 1;
+    flag = 0;
+    Serial.print("jnCount:   "); Serial.print(jnCount);
+    Serial.print("Count:   "); Serial.println(count);
+  }
+  count = count + 1;
+  if (count >= 10)
+    blackflag = 0;
+
+  if (count > 1000)
+    count = 0;
+
+  Serial.print("jnCount:   "); Serial.print(jnCount);
+  Serial.print("    Count:   "); Serial.print(count);
+  Serial.print("    blackflag:   "); Serial.println(blackflag);
+
+
   switch (val)
   {
     //////////////////////////
@@ -117,26 +141,40 @@ void loop() {
 
     ///////////////////////////
     case 0b00111000  :                              //right turn1
-      while (val != 0b00111111 )
       {
-        val = (PINC | 0b00100000);
-        analogWrite(pwm_1, pwm_low);
-        analogWrite(pwm_2, pwm_low);
-        forward();
-        Serial.println("inside till all white");
-      }
-      while (val != 0b00111001 )
-      { val = (PINC | 0b00100000);
+        Serial.println("right turn 1");
+        while (val != 0b00111111 )
         {
+          val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+          {
+            break;
+          }
+          analogWrite(pwm_1, pwm_low);
+          analogWrite(pwm_2, pwm_low);
+          forward();
+          Serial.println("inside till all white");
+        }
+        while (val != 0b00111001 )
+        {
+          val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+          {
+            break;
+          }
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
           rightBack();
           Serial.println("inside till all centre1");
+
         }
-      }
-      while (val != 0b00110001 )
-      { val = (PINC | 0b00100000);
+        while (val != 0b00110001 )
         {
+          val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+          {
+            break;
+          }
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
           rightBack();
@@ -179,30 +217,45 @@ void loop() {
       break;
     ///////////////////////////////
     case 0b00110000 :                             //right turn 2.
-      while (val != 0b00111111 )
       {
-        val = (PINC | 0b00100000);
-        analogWrite(pwm_1, pwm_low);
-        analogWrite(pwm_2, pwm_low);
-        forward();
-        Serial.println("inside till all white");
-      }
-      while (val != 0b00111001 )
-      { val = (PINC | 0b00100000);
+        Serial.println("right turn 2 ");
+        while (val != 0b00111111 )
         {
+          val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+          {
+            break;
+          }
+          analogWrite(pwm_1, pwm_low);
+          analogWrite(pwm_2, pwm_low);
+          forward();
+          Serial.println("inside till all white");
+        }
+        while (val != 0b00111001 )
+        {
+          val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+            if (val == 0b00100000 || blackflag == 1)
+            {
+              break;
+            }
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
           rightBack();
           Serial.println("inside till all centre1");
+
         }
-      }
-      while (val != 0b00110001 )
-      { val = (PINC | 0b00100000);
-        {
+        while (val != 0b00110001 )
+        { val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+          {
+            break;
+          }
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
           rightBack();
           Serial.println("inside till all centre2");
+
         }
       }
 
@@ -223,27 +276,38 @@ void loop() {
 #endif
       break;
     //////////////////////////////////
-    case 0b00100011  :                         //left turn
-      while (val != 0b00111111 )
+    case 0b00100011  :                         //left turn 1
       {
-        val = (PINC | 0b00100000);
-        analogWrite(pwm_1, pwm_low);
-        analogWrite(pwm_2, pwm_low);
-        forward();
-        Serial.println("inside till all white");
-      }
-      while (val != 0b00110011 )
-      { val = (PINC | 0b00100000);
+        Serial.println("left turn 1 ");
+        while (val != 0b00111111 )
         {
+          val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+          {
+            break;
+          }
+          analogWrite(pwm_1, pwm_low);
+          analogWrite(pwm_2, pwm_low);
+          forward();
+          Serial.println("inside till all white");
+        }
+        while (val != 0b00110011 )
+        { val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+          {
+            break;
+          }
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
           leftBack();
           Serial.println("inside till all centre1");
         }
-      }
-      while (val != 0b00110001 )
-      { val = (PINC | 0b00100000);
-        {
+        while (val != 0b00110001 )
+        { val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+          {
+            break;
+          }
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
           leftBack();
@@ -287,27 +351,39 @@ void loop() {
       break;
     //////////////////////////////////
 
-    case 0b00100001 :                       //left turn
-      while (val != 0b00111111 )
+    case 0b00100001 :                       //left turn 2
       {
-        val = (PINC | 0b00100000);
-        analogWrite(pwm_1, pwm_low);
-        analogWrite(pwm_2, pwm_low);
-        forward();
-        Serial.println("inside till all white");
-      }
-      while (val != 0b00110011 )
-      { val = (PINC | 0b00100000);
+        Serial.println("left turn 2 ");
+        while (val != 0b00111111 )
         {
+          val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+          {
+            break;
+          }
+          analogWrite(pwm_1, pwm_low);
+          analogWrite(pwm_2, pwm_low);
+          forward();
+          Serial.println("inside till all white");
+        }
+        while (val != 0b00110011 )
+        { val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+          {
+            break;
+          }
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
           leftBack();
           Serial.println("inside till all centre1");
         }
-      }
-      while (val != 0b00110001 )
-      { val = (PINC | 0b00100000);
+        while (val != 0b00110001 )
         {
+          val = (PINC | 0b00100000);
+          if (val == 0b00100000 || blackflag == 1)
+          {
+            break;
+          }
           analogWrite(pwm_1, pwm_high);
           analogWrite(pwm_2, pwm_high);
           leftBack();
@@ -319,10 +395,18 @@ void loop() {
 #endif
       break;
     //////////////////////////////////
-    case 0b00100000 : {
-        analogWrite(pwm_1, pwm_low);
-        analogWrite(pwm_2, pwm_low);
-        forward();
+    case 0b00100000 :
+      {
+        while (val == 0b00100000)
+        {
+          Serial.println("ALL UNDER B");
+          val = (PINC | 0b00100000);
+          blackflag = 1;
+          flag = 1;
+          analogWrite(pwm_1, pwm_high);
+          analogWrite(pwm_2, pwm_high);
+          forward();
+        }
       };
 #ifdef WANT
       Serial.println("ALL UNDER BLACK");
@@ -330,14 +414,18 @@ void loop() {
       break;
     //////////////////////////////////
     default: {
-        analogWrite(pwm_1, pwm_low);
-        analogWrite(pwm_2, pwm_low);
+        analogWrite(pwm_1, pwm_high);
+        analogWrite(pwm_2, pwm_high);
         forward();
       };
 #ifdef WANT
       Serial.println("Default");
 #endif
+      break;
       /////////////////////////////////
+
+      /////////////////////////////////
+
       delay(0);
   }
 }

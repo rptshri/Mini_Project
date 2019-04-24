@@ -15,6 +15,8 @@ MDF https://en.wikipedia.org/wiki/Medium-density_fibreboard
 
 Materials https://www.3dhubs.com/knowledge-base/pla-vs-abs-whats-difference 
 
+MDF Plywood difference https://www.livspace.com/magazine/mdf-vs-plywood-comparison/
+
 1. Project report *
 2. Imperial Sheet *
 3. Project hardware  *   

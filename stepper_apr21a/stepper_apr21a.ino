@@ -5,11 +5,11 @@ Servo myservo;
 int pos = 0;    
 
 void setup() {
-  myservo.attach(8);   
+  myservo.attach(10);   
 }
 void pakad()
 {
-  for (pos = 90; pos >= 45; pos-=10)
+  for (pos = 125; pos >= 45; pos-=10)
   { 
     myservo.write(pos);             
     delay(150);                      
@@ -26,10 +26,10 @@ void sod()
 void loop()
 { myservo.write(90); 
   
-//  sod();
-//  delay(2000);
-//  pakad();
-//  delay(2000);
+  sod();
+  delay(2000);
+  pakad();
+  delay(2000);
  
 }
  

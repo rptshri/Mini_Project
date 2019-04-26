@@ -9,24 +9,36 @@ int pwm_right = 0;
 int pwm_left = 0;
 int pwm = 0;
 
-#define pwm_high 200
-#define pwm_low 200
+#define pwm_high 150
+#define pwm_low 100
 #define error 0
 
 
 
-void motor1_control()
+void motorA_forward()
 {
-  analogWrite(pwm_1, 255);
-  digitalWrite(2, HIGH);
+  analogWrite(pwm_1, pwm_high);
+  digitalWrite(3, HIGH);
+  digitalWrite(2, LOW);
+}
+void motorA_backward()
+{
+  analogWrite(pwm_1, pwm_high);
   digitalWrite(3, LOW);
+  digitalWrite(2, HIGH);
 }
 
-void motor2_control()
+void motorB_forward()
 {
-  analogWrite(pwm_2, 255);
+  analogWrite(pwm_2, pwm_high);
   digitalWrite(4, LOW );
   digitalWrite(7, HIGH );
+}
+void motorB_backward()
+{
+  analogWrite(pwm_2, pwm_high);
+  digitalWrite(4, HIGH );
+  digitalWrite(7, LOW );
 }
 
 void setup() {
@@ -44,6 +56,20 @@ void loop() {
   pwm = pwm_high;
   pwm_right = pwm;
   pwm_left = pwm - error;
-  motor1_control();
-  motor2_control();
+
+  motorA_forward();
+  motorB_forward();
+  delay(5000);
+
+  motorA_backward();
+  motorB_backward();
+  delay(5000);
+
+  motorA_forward();
+  motorB_backward();
+  delay(5000);
+
+  motorA_backward();
+  motorB_forward();
+  delay(5000);
 }

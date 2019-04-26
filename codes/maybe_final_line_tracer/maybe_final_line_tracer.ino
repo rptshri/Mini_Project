@@ -1,12 +1,15 @@
 #define debug
 //#define debug1
-//#define WANT
+#define WANT
 //#define pwm_high 210
 //#define pwm_low 170
 //#define pwm_least 140
-#define pwm_high 150
-#define pwm_low 110
-#define pwm_least 70
+//#define pwm_high 150
+//#define pwm_low 110
+//#define pwm_least 70
+#define pwm_high 160
+#define pwm_low 130
+#define pwm_least 100
 //const int mod1 = 8;
 //const int mod2 = 9;
 //const int mod3 = 10;
@@ -31,8 +34,8 @@ void serialprint()
 void backward()
 { digitalWrite(4, HIGH);
   digitalWrite(7, LOW );
-  digitalWrite(2, LOW );
-  digitalWrite(3, HIGH);
+  digitalWrite(2, HIGH );
+  digitalWrite(3, LOW);
 }
 
 
@@ -40,24 +43,24 @@ void forward()
 {
   digitalWrite(4, LOW);
   digitalWrite(7, HIGH);
-  digitalWrite(2, HIGH );
-  digitalWrite(3, LOW);
+  digitalWrite(2, LOW );
+  digitalWrite(3, HIGH);
 }
 
 void leftBack()
 {
   digitalWrite(4, HIGH);
   digitalWrite(7, LOW);
-  digitalWrite(2, HIGH );
-  digitalWrite(3, LOW);
+  digitalWrite(2, LOW );
+  digitalWrite(3, HIGH);
 }
 
 void rightBack()
 {
   digitalWrite(4, LOW);
   digitalWrite(7, HIGH);
-  digitalWrite(2, LOW );
-  digitalWrite(3, HIGH);
+  digitalWrite(2, HIGH );
+  digitalWrite(3, LOW);
 }
 
 

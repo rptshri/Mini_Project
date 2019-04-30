@@ -1,4 +1,10 @@
 #include"Bluetooth.h"
+//#include"ServoCode.h"
+
+
+#include <Servo.h>
+Servo myservo;
+int pos1 = 0;
 
 #define debug
 //#define debug1
@@ -15,13 +21,17 @@ const int dir1PinA = 2;
 const int dir1PinB = 3;
 const int dir2PinA = 4;
 const int dir2PinB = 7;
+const int IR = 12;
+boolean go = 1;
 boolean done = 0;
 boolean flag = 0;
+boolean Tflag = 0;
 boolean Rflag = 0;
 boolean Lflag = 0;
 boolean blackflag = 0;
 boolean Sourceflag = 0;
 boolean Destinationflag = 0;
+boolean runflag = 0;
 int jnCount = 0;
 int count = 0;
 /////
@@ -31,6 +41,8 @@ int Sourcedata = 0;
 int Destinationdata = 0;
 /////
 unsigned long int val = 0b00000000;
+
+
 
 
 void serialprint()
@@ -72,6 +84,13 @@ void rightBack()
   digitalWrite(2, HIGH );
   digitalWrite(3, LOW);
 }
+void Stop()
+{
+  digitalWrite(4, LOW);
+  digitalWrite(7, LOW);
+  digitalWrite(2, LOW );
+  digitalWrite(3, LOW);
+}
 
 ////////////////////////////////////////////
 void ModLeft()
@@ -101,13 +120,87 @@ void ModLeft()
     Serial.println("inside till all centre2");
   }
 }
-///////////////////////////////////////////
+////////////////////////////////////////////
+void ModRight()
+{
+  Serial.println("INSIDE MOD Right ");
+  while (val != 0b00100011)
+  {
+    val = (PINC | 0b00100000);
+    analogWrite(pwm_1, pwm_high);
+    analogWrite(pwm_2, pwm_high);
+    rightBack();
+    Serial.println("inside till right IR on LINE");
+  }
+  while (val != 0b00111001 )
+  {
+    val = (PINC | 0b00100000);
+    analogWrite(pwm_1, pwm_high);
+    analogWrite(pwm_2, pwm_high);
+    rightBack();
+    Serial.println("inside till all centre1");
+  }
+  while (val != 0b00110001 )
+  { val = (PINC | 0b00100000);
+    analogWrite(pwm_1, pwm_high);
+    analogWrite(pwm_2, pwm_high);
+    rightBack();
+    Serial.println("inside till all centre2");
+  }
+}
 
+void make180()
+{
+  while (val != 0b00111001 )
+  {
+    val = (PINC | 0b00100000);
+    analogWrite(pwm_1, pwm_high);
+    analogWrite(pwm_2, pwm_high);
+    leftBack();
+    Serial.println("inside till all centre1");
+  }
+  while (val != 0b00110001 )
+  { val = (PINC | 0b00100000);
+    analogWrite(pwm_1, pwm_high);
+    analogWrite(pwm_2, pwm_high);
+    leftBack();
+    Serial.println("inside till all centre2");
+  }
+}
+//////////////////////////////servo///////////////
+void sod()
+{
+  myservo.attach(11);
+  delay(100);
+  Serial.println("SOD");
+
+  for (pos1 = 122; pos1 >= 45; pos1 -= 2)
+  {
+    Serial.println(pos1);
+    myservo.write(pos1);
+    delay(50);
+  }
+}
+/////////////////
+void pakad()
+{
+  myservo.attach(11);
+  delay(100);
+  Serial.println("PAKAD");
+  for (pos1 = 45; pos1 <= 122; pos1 += 2)
+  {
+    Serial.println(pos1);
+    myservo.write(pos1);
+    delay(50);
+  }
+}
+//////////////////////////////////////////
 
 
 void setup() {
 
   Serial.begin(9600);
+  myservo.attach(11);
 
   pinMode(pwm_1, OUTPUT);
   pinMode(pwm_2, OUTPUT);
@@ -115,52 +208,17 @@ void setup() {
   pinMode(dir2PinA, OUTPUT);
   pinMode(dir1PinB, OUTPUT);
   pinMode(dir2PinB, OUTPUT);
+  pinMode(IR, OUTPUT);
   DDRB = 0x00;
   mySerial.begin(9600);
   mySerial.println("welcome ");
+  sod();
 
   delay(500);
 }
 
-void loop() {
-
-  //  while (gotData != 1)
-  //  {
-  //    mySerial.println("Enter Source data....");
-  //    delay(500);
-  //    Sourceflag = 0;
-  //    Sourcedata = 0;
-  //    mySerial.println("Enter Destination data....");
-  //    delay(500);
-  //    Destinationdata = 0;
-  //    Destinationflag = 0;
-  //    //    while (Destinationflag != 1)
-  //    //    {
-  //    //      Serial.println("Getting Destination Data over BLE.");
-  //    //      Destinationdata = getData();
-  //    //      delay(100);
-  //    //      if (Destinationdata > 0)
-  //    //      {
-  //    //        Serial.print("Received Data:  "); Serial.println(Destinationdata);
-  //    //        Destinationflag = 1;
-  //    //      }
-  //    //    }
-  //    //    while (Sourceflag != 1)
-  //    //    {
-  //    //      Serial.println("Getting Source Data over BLE.");
-  //    //      Sourcedata = getData();
-  //    //      delay(100);
-  //    //      if (Sourcedata > 0)
-  //    //      {
-  //    //        Serial.print("Received Data:  "); Serial.println(Sourcedata);
-  //    //        Sourceflag = 1;
-  //    //        gotData = 1;
-  //    //        //      data = 1;
-  //    //      }
-  //    //      data = 0;
-  //    //    }
-  //    delay(1000);
-  //  }
+void loop()
+{
 
   while (Sourceflag != 1)
   {
@@ -199,10 +257,20 @@ void loop() {
     delay(2000);
   }
 
-
   if (Sourceflag & Destinationflag == 1)
     data = 1;
 
+  //  if (go == 1)                          //
+  //  {
+  //    Tflag = Sourcedata % 2;
+  //  }
+  //  else
+  //  {
+  //    if (Destinationdata > Sourcedata)
+  //      Tflag = Destinationdata % 2;
+  //    else
+  //      Tflag != (Destinationdata % 2);
+  //  }
 
   uint8_t val = PINC;
   val = (PINC | 0b00100000);
@@ -234,22 +302,76 @@ void loop() {
   Serial.print("    blackflag:   "); Serial.print(blackflag);
   Serial.print("    Rflag:   "); Serial.print(Rflag);
   Serial.print("    Lflag:   "); Serial.println(Lflag);
+  Serial.print("    Tflag:   "); Serial.println(Tflag);
+  Serial.print("    Dread(IR):   "); Serial.println(digitalRead (IR));
 
-  if (jnCount == 2 && done == 0)
+  //  if (jnCount == Sourcedata && done == 0)     //
+  //  {
+  //    if (Tflag == 1)
+  //    {
+  //      ModRight();
+  //      done = 1;
+  //    }
+  //    else
+  //    { ModLeft();
+  //      done = 1;
+  //    }
+  //  }
+  //======================================
+
+  if (Sourcedata == 3 && Destinationdata == 2 )
   {
-    done = 0;
-    Lflag = 1;
+    if (done == 0)
+    {
+      if (jnCount == 3)
+      {
+        ModRight();
+        done = 1;
+      }
+    }
+    Tflag = (Destinationdata - jnCount + 1) % 2;
+    Serial.print("Tflag     "); Serial.println(Tflag);
+
+    if (runflag == 1)
+    {
+      if (flag == 1 && Tflag == 1)
+      {
+        ModLeft();
+      }
+      if (flag == 1 && Tflag == 0)
+      {
+        ModRight();
+      }
+    }
   }
-  else
+  //==========================================
+
+  if (digitalRead (IR) == 1 && runflag == 0)           //t
   {
-    Lflag = 0;
+    jnCount = 0;
+    runflag = 1;
+    //    go = 0;
+    Stop();
+    pakad();
+    make180();
   }
 
-  if (Lflag == 1)
-  {
-    ModLeft();
-    done = 1;
-  }
+
+  //  if (jnCount == 2 && done == 0)    //
+  //  {
+  //    done = 0;
+  //    Lflag = 1;
+  //  }
+  //  else
+  //  {
+  //    Lflag = 0;
+  //  }
+  //
+  //  if (Lflag == 1)
+  //  {
+  //    ModLeft();
+  //    done = 1;
+  //  }
 
 
 
